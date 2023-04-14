@@ -1,18 +1,44 @@
-package com.example.shoppinglistversion2.ui.theme
+package com.example.shoppinglistversion2
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier.fillMaxSize()) {
+fun ScaffoldScreen() {
+
+
     var firstScreen by rememberSaveable{ mutableStateOf(true) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Shopping List") },
+                backgroundColor = MaterialTheme.colors.primary,
+                navigationIcon = {
+                    IconButton(
+                        onClick = { firstScreen = true }
+                    ){
+                        Icon(imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) {
+        MainScreen(Modifier.padding(it))
+    }
+}
+
+@Composable
+fun MainScreen(modifier: Modifier = Modifier.fillMaxSize()) {
     var itemsArrayList by rememberSaveable{ mutableStateOf(arrayListOf<String>())}
 
     if (firstScreen) {
