@@ -14,8 +14,11 @@ import androidx.compose.ui.Modifier
 @Composable
 fun ScaffoldScreen() {
 
-
     var firstScreen by rememberSaveable{ mutableStateOf(true) }
+    val onTextChange: () -> Unit = {
+        firstScreen = false
+    }
+
 
     Scaffold(
         topBar = {
@@ -27,18 +30,18 @@ fun ScaffoldScreen() {
                         onClick = { firstScreen = true }
                     ){
                         Icon(imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back")
+                            contentDescription = "Back")
                     }
                 }
             )
         }
     ) {
-        MainScreen(Modifier.padding(it))
+        MainScreen(Modifier.padding(it), firstScreen, onTextChange)
     }
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier.fillMaxSize()) {
+fun MainScreen(modifier: Modifier = Modifier.fillMaxSize(), firstScreen: Boolean, onTextChange:() -> Unit) {
     var itemsArrayList by rememberSaveable{ mutableStateOf(arrayListOf<String>())}
 
     if (firstScreen) {
@@ -48,7 +51,7 @@ fun MainScreen(modifier: Modifier = Modifier.fillMaxSize()) {
             TextField(value = text, onValueChange = { text = it })
             Button(onClick = {
                 itemsArrayList.add(text)
-                firstScreen=false
+                onTextChange
             }) {
 
             }
