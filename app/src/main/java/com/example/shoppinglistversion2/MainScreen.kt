@@ -7,18 +7,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 
 @Composable
 fun ScaffoldScreen() {
 
-    var firstScreen by rememberSaveable{ mutableStateOf(true) }
-    val onTextChange: () -> Unit = {
-        firstScreen = false
-    }
-
+    var firstScreen by rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -27,38 +22,52 @@ fun ScaffoldScreen() {
                 backgroundColor = MaterialTheme.colors.primary,
                 navigationIcon = {
                     IconButton(
-                        onClick = { firstScreen = true }
-                    ){
-                        Icon(imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back")
+                        onClick = {
+                            firstScreen = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         }
-    ) {
-        MainScreen(Modifier.padding(it), firstScreen, onTextChange)
+    ) { paddingValues ->
+        MainScreen(
+            firstScreen = firstScreen,
+            setFirstScreen = {
+                firstScreen = it },
+
+            modifier = Modifier.padding(paddingValues),
+        )
     }
 }
 
-@Composable
-fun MainScreen(modifier: Modifier = Modifier.fillMaxSize(), firstScreen: Boolean, onTextChange:() -> Unit) {
-    var itemsArrayList by rememberSaveable{ mutableStateOf(arrayListOf<String>())}
 
-    if (firstScreen) {
-        Column() {
+
+@Composable
+fun MainScreen(
+    firstScreen: Boolean,
+    setFirstScreen: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val itemsArrayList = remember { mutableStateListOf<String>() }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        if (firstScreen) {
             //necesario runtime.*
             var text by rememberSaveable { mutableStateOf("") }
-            TextField(value = text, onValueChange = { text = it })
+            TextField(value = text, onValueChange = {
+                text = it })
             Button(onClick = {
                 itemsArrayList.add(text)
-                onTextChange
+                setFirstScreen(false)
             }) {
 
             }
-        }
-    } else {
-        Column() {
-            for (i in itemsArrayList.size-1 downTo 0){
+        } else {
+            for (i in itemsArrayList.size - 1 downTo 0) {
                 Text(text = itemsArrayList[i])
             }
         }
